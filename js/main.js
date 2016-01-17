@@ -6,29 +6,34 @@
 
 	(function($, w,d){
 
+		var xhr = new XMLHttpRequest(), lessonsData, data, nav = $("#lessonsNav"), contentContainer = $("#content");
+
 		function updateNavBar(d){
+			lessonsData = d;
 			var chapters = Object.keys(d);
 			for(var i=0;i<chapters.length;i++){
 				$("<a></a>", {class: "btn-link btn-xs", id:chapters[i]}).text(d[chapters[i]]).appendTo($("<li></li>").appendTo(nav));
 			}
 		}
 
-		nav.on('click','li a', function(e){
-			makeAjaxCall(e.target.id);
-		});
+		function updateContent(d){
+			contentContainer.empty();
+			contentContainer.append($.parseHTML(d));
+		}
 
 		/**
 		* Load config file and update navigation panel in the main file
 		*/
-		function makeAjaxClass(id){
-			var id = id || "config/lessonsLink.json";
+		function makeAjaxCall(id, type, clb){
 
-			var xhr = new XMLHttpRequest(), data, nav = $("#lessonsNav");
+			if(id ===  undefined){
+				return;
+			}
 
 			xhr.onreadystatechange = function(e){
 				if(xhr.readyState == 4 && xhr.status === 200){
-					data = JSON.parse(xhr.responseText);
-					updateNavBar(data);
+					data = type === "json" ? JSON.parse(xhr.responseText) : xhr.responseText; 
+					clb(data);
 				}
 			}
 
@@ -39,6 +44,10 @@
 		}
 
 		//Init Ajax Call For Lessons
-		makeAjaxClass();
+		makeAjaxCall("config/lessonsLink.json", 'json', updateNavBar);
+
+		nav.on('click','li a', function(e){
+			makeAjaxCall(lessonsData[e.target.id]+".html", "html", updateContent);
+		});
 
 	})(jQuery, window, document, undefined)
