@@ -3,6 +3,8 @@
 	"lesson2" : "buttonGlyph",
 	"lesson3" : "form",
 	"lesson4" : "dropDown",
-	"lesson5" : "grid",
-	"lesson6" : "grid"
+	"lesson5" : "tabs",
+	"lesson6" : "nav",
+	"lesson7" : "listGroup",
+	"lesson8" : "carousel"
 }
